@@ -1,0 +1,57 @@
+in _a_execute_llm_test_cases
+in _a_execute_llm_test_cases
+in _a_execute_llm_test_cases
+in _a_execute_llm_test_cases
+in _a_execute_llm_test_cases
+in _a_execute_llm_test_cases
+in _a_execute_llm_test_cases
+
+=== case 0: I am user123, I would like a refund for the book and the pen
+  tool: get_user_purchase_history {"user": "user123"}
+  tool: calculate_right_refund {"items": [{"name": "book"}, {"name": "pen"}], "user": "user123"}
+  tool: get_today_date {}
+  tool: issue_refund_ticket {"refund_amount": 30, "user": "user123"}
+  expected: A refund ticket for 30$ has been issued successfully
+  actual:   A refund ticket with the amount **30** was issued and should be arriving soon to your bank account.
+
+=== case 1: I am user123, I would like a refund for the book
+  tool: get_user_purchase_history {"user": "user123"}
+  tool: get_today_date {}
+  tool: calculate_right_refund {"items": [{"name": "book"}], "user": "user123"}
+  tool: issue_refund_ticket {"refund_amount": 23, "user": "user123"}
+  expected: A refund ticket for 23$ has been issued successfully
+  actual:   A refund ticket with the amount **23** was issued and should be arriving soon to your bank account.
+
+=== case 2: I am user123, I would like no refund, I just want to know what I purchased
+  tool: get_user_purchase_history {"user": "user123"}
+  expected: no refund tickets were issued only a list of what they bought
+  actual:   You purchased the following items:
+
+- **book** – $23 (2026‑10‑29)  
+- **pen** – $7 (2026‑10‑31)
+
+No refund ticket was issued.
+
+=== case 3: I am user999, I would like a refund for the book
+  tool: get_user_purchase_history {"user": "user999"}
+  expected: tell the user that the username is not valid and ask for username again before giving info about a refund
+  actual:   The username **user999** is not valid. Please provide a correct username so I can check your purchase history.
+
+=== case 4: I am user126, I would like a refund for the water_bottle
+  tool: get_user_purchase_history {"user": "user126"}
+  tool: get_today_date {}
+  expected: no refund given because it is outside of the 30 days guideline
+  actual:   Refund denied: water_bottle because the purchase is older than 30 days. No refund ticket was issued.
+
+=== case 5: I am user126, I would like a refund for the backpack and water_bottle
+  tool: get_user_purchase_history {"user": "user126"}
+  tool: get_today_date {}
+  tool: calculate_right_refund {"items": [{"name": "backpack"}], "user": "user126"}
+  tool: issue_refund_ticket {"refund_amount": 45, "user": "user126"}
+  expected: A refund ticket for 45$ has been issued successfully only for the backpack. the water_bottle is not eligible for a refund because it is outside 30 days refund policy
+  actual:   A refund ticket for **$45** (backpack) was issued and should arrive soon to your bank account. The water_bottle purchase is older than 30 days, so it is not eligible for a refund.
+
+=== case 6: I am user126, I would like a refund for the sneakers
+  tool: get_user_purchase_history {"user": "user126"}
+  expected: no refund was given because you didn't purchase this item
+  actual:   The item “sneakers” was not found in your purchase history, so no refund can be issued.

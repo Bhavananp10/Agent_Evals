@@ -19,7 +19,7 @@ def get_user_purchase_history(user: str) -> dict:
     logging.info(f"using get_user_purchase_history tool on user: {user}")
     if users_data.get(user):
         return users_data[user]
-    return {"status": "there was no username found"}
+    return {"status": "USER_NOT_FOUND", "message": f"no username '{user}' exists. Stop and ask the user for a valid username."}
 
 @tool
 def calculate_right_refund(user:str, items:list[PurchaseItem])-> str:
@@ -38,7 +38,7 @@ def calculate_right_refund(user:str, items:list[PurchaseItem])-> str:
 
         return f"the value of the refund is: {total_refund}"
 
-    return {"status": "there was no username found"}
+    return {"status": "USER_NOT_FOUND", "message": f"no username '{user}' exists. Stop and ask the user for a valid username."}
 
 @tool
 def issue_refund_ticket(user:str, refund_amount: int) -> str:
