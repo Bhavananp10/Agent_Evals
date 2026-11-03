@@ -3,7 +3,7 @@ from data import users_data
 from dotenv import load_dotenv
 import logging
 from objects import PurchaseItem
-from datetime import date
+from clock import today
 
 load_dotenv()
 
@@ -53,7 +53,7 @@ def get_today_date() -> str:
     This tool takes no arguments
     only use if a user exist and an item is present for refund"""
     logging.info(f"using the date tool")
-    return date.today().isoformat()
+    return today().isoformat()
 
 # print(get_user_purchase_history.invoke("user123"))
 # book = PurchaseItem(name="book")

@@ -95,7 +95,9 @@ def build_metrics():
     return trace_metrics, single_turn_metrics
 
 
-def main():
+def main(on_phase_done=None):
+    """Run all 7 metrics. on_phase_done(name) fires after each DeepEval phase
+    so callers can snapshot the (overwritten) latest test-run file."""
     load_dotenv()
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "agent"))
     from agent import agent
@@ -104,6 +106,7 @@ def main():
     cache_config = CacheConfig(use_cache=False, write_cache=False)
     display_config = DisplayConfig(inspect_after_run=False)
     test_cases = []
+    transcripts = []
 
     # The callback captures the trace required by the four agentic metrics.
     for golden in dataset.evals_iterator(
@@ -129,6 +132,18 @@ def main():
                     )
                 )
 
+        transcripts.append(
+            {
+                "input": golden.input,
+                "expected_output": golden.expected_output,
+                "actual_output": response["messages"][-1].content,
+                "tools_called": [
+                    {"name": t.name, "input_parameters": t.input_parameters}
+                    for t in tools_called
+                ],
+            }
+        )
+
         # Reuse the same response for the three remaining metrics. Keep these
         # cases local so repeated runs do not accumulate dataset.test_cases.
         test_cases.append(
@@ -141,13 +156,19 @@ def main():
             )
         )
 
+    if on_phase_done:
+        on_phase_done("trace")
+
     evaluate(
         test_cases=test_cases,
         metrics=single_turn_metrics,
         cache_config=cache_config,
         display_config=display_config,
     )
+    if on_phase_done:
+        on_phase_done("single_turn")
     print(f"\nCompleted all 7 metrics for {len(test_cases)} test cases.")
+    return transcripts
 
 
 if __name__ == "__main__":

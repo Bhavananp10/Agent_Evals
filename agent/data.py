@@ -1,15 +1,16 @@
 
-from datetime import date, timedelta
+from datetime import timedelta
+from clock import today
 
 users_data = {
     "user123": {
         "book": {
             "price": 23,
-            "date": (date.today() - timedelta(days=5)).isoformat()
+            "date": (today() - timedelta(days=5)).isoformat()
         },
         "pen": {
             "price": 7,
-            "date": (date.today() - timedelta(days=3)).isoformat()
+            "date": (today() - timedelta(days=3)).isoformat()
         }
     },
     "user124": {
@@ -31,11 +32,11 @@ users_data = {
     "user126": {
         "backpack": {
             "price": 45,
-            "date": (date.today() - timedelta(days=10)).isoformat()
+            "date": (today() - timedelta(days=10)).isoformat()
         },
         "water_bottle": {
             "price": 18,
-            "date": (date.today() - timedelta(days=100)).isoformat()
+            "date": (today() - timedelta(days=100)).isoformat()
         },
         "lunch_box": {
             "price": 14,

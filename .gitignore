@@ -9,3 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+# DeepEval auto-generated run cache
+.deepeval/
+
